@@ -314,6 +314,16 @@ const TaskCard: React.FC<TaskCardProps> = ({
             ))}
           </div>
           <div className="flex items-center gap-3 text-[12px] text-gray-400 dark:text-gray-400">
+            {task.reporter && (
+              <a
+                href={`?creator=${encodeURIComponent(task.reporter)}`}
+                onClick={e => e.stopPropagation()}
+                className="hover:text-gray-700 dark:hover:text-gray-200 hover:underline"
+                title={`Created by ${task.reporter}: show their tasks`}
+              >
+                by {task.reporter}
+              </a>
+            )}
             {task.dueDate && <span>Due <StoredDate value={task.dueDate} dateFormat={dateFormat} /></span>}
             {task.dependencies.length > 0 && (
               <span className="inline-flex items-center gap-1" title={`Depends on ${task.dependencies.join(', ')}`}>

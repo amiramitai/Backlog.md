@@ -239,6 +239,22 @@ const Board: React.FC<BoardProps> = ({
   };
   const canonicalMilestoneFilter = canonicalizeMilestone(milestoneFilter);
 
+  // signals: the creator filter (task.reporter), kept in the URL as ?creator= so a card's creator link can set it.
+  const [filterCreator, setFilterCreator] = useState<string>(
+    () => new URLSearchParams(window.location.search).get('creator') ?? ''
+  );
+  const applyCreator = (value: string) => {
+    setFilterCreator(value);
+    const url = new URL(window.location.href);
+    if (value) url.searchParams.set('creator', value); else url.searchParams.delete('creator');
+    window.history.replaceState(window.history.state, '', url);
+  };
+  const uniqueCreators = useMemo(() => {
+    const seen = new Set<string>();
+    for (const task of tasks) if (task.reporter?.trim()) seen.add(task.reporter.trim());
+    return Array.from(seen).sort((a, b) => a.localeCompare(b));
+  }, [tasks]);
+
   // Collect unique assignees and labels from all tasks for filter dropdowns
   const uniqueAssignees = useMemo(() => {
     const seen = new Set<string>();
@@ -265,13 +281,19 @@ const Board: React.FC<BoardProps> = ({
     normalizedFilterLabels.length > 0 ||
     filterPriority !== '' ||
     filterType !== '' ||
-    filterProject !== '';
+    filterProject !== '' ||
+    filterCreator !== '';
 
   // Filter tasks by milestone when milestoneFilter is set, then apply assignee/label/priority filters
   const filteredTasks = useMemo(() => {
     let result = tasks;
     if (milestoneFilter) {
       result = result.filter(task => canonicalizeMilestone(task.milestone) === canonicalMilestoneFilter);
+    }
+    if (filterCreator === '__none__') {
+      result = result.filter(task => !task.reporter?.trim());
+    } else if (filterCreator) {
+      result = result.filter(task => task.reporter?.trim() === filterCreator);
     }
     if (filterAssignee === '__unassigned__') {
       result = result.filter(task => !task.assignee || task.assignee.length === 0 || task.assignee.every(a => !a.trim()));
@@ -741,6 +763,31 @@ const Board: React.FC<BoardProps> = ({
             </div>
             {onFiltersChange && (
               <div className="flex flex-wrap items-center gap-3" aria-label="Board filters">
+                <button
+                  type="button"
+                  onClick={() => applyCreator(filterCreator === '@owner' ? '' : '@owner')}
+                  aria-pressed={filterCreator === '@owner'}
+                  className={`h-10 px-4 text-sm font-medium rounded-lg border transition-colors ${
+                    filterCreator === '@owner'
+                      ? 'bg-gray-900 text-white border-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:border-gray-100'
+                      : 'bg-white text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 hover:border-gray-400'
+                  }`}
+                  title="Tasks you created"
+                >
+                  Mine
+                </button>
+                <select
+                  aria-label="Filter board by creator"
+                  value={filterCreator}
+                  onChange={e => applyCreator(e.target.value)}
+                  className={BOARD_FILTER_SELECT_CLASS}
+                >
+                  <option value="">All creators</option>
+                  <option value="__none__">No creator</option>
+                  {uniqueCreators.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
                 <select
                   aria-label="Filter board by assignee"
                   value={filterAssignee}
@@ -802,7 +849,7 @@ const Board: React.FC<BoardProps> = ({
                 {hasActiveFilters && (
                   <button
                     type="button"
-                    onClick={() => onFiltersChange({ assignee: '', labels: [], priority: '', taskType: '', project: '' })}
+                    onClick={() => { applyCreator(''); onFiltersChange({ assignee: '', labels: [], priority: '', taskType: '', project: '' }); }}
                     className={BOARD_FILTER_BUTTON_CLASS}
                   >
                     Clear filters

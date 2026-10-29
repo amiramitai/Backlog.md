@@ -2258,6 +2258,11 @@ export class Core {
 				title: input.title.trim(),
 				status: resolvedStatus,
 				assignee: resolvedAssignees,
+				// signals: the creator. BACKLOG_REPORTER names who runs this process (the owner's board sets @owner);
+				// else the project's default_reporter.
+				...(process.env.BACKLOG_REPORTER || config?.defaultReporter
+					? { reporter: process.env.BACKLOG_REPORTER || config?.defaultReporter }
+					: {}),
 				labels: normalizedLabels,
 				dependencies: validDependencies,
 				references: normalizedReferences,
