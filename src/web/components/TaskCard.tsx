@@ -16,7 +16,7 @@ const TONES = [
   'bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-300',
   'bg-lime-100 text-lime-700 dark:bg-lime-500/15 dark:text-lime-200',
 ];
-const AVATARS = ['bg-rose-500', 'bg-amber-500', 'bg-emerald-600', 'bg-sky-600', 'bg-violet-600', 'bg-fuchsia-600', 'bg-teal-600'];
+const AVATARS = ['bg-rose-700', 'bg-amber-700', 'bg-emerald-700', 'bg-sky-700', 'bg-violet-700', 'bg-fuchsia-700', 'bg-teal-700'];
 const hashOf = (text: string) => [...text].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
 const labelTone = (label: string) => TONES[hashOf(label) % TONES.length];
 const avatarTone = (who: string) => AVATARS[hashOf(who) % AVATARS.length];

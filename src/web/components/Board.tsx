@@ -730,7 +730,7 @@ const Board: React.FC<BoardProps> = ({
                 title={!hasTasksWithMilestones ? 'No tasks have milestones. Assign milestones to tasks first.' : 'Group tasks by milestone'}
                 className={`px-5 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${
                   !hasTasksWithMilestones
-                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                    ? 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
                     : laneMode === 'milestone'
                       ? 'bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 shadow-sm'
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'

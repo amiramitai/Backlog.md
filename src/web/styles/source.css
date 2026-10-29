@@ -18,7 +18,7 @@ html.dark {
     --color-gray-200: #d6d6da;
     --color-gray-300: #b3b3b8;
     --color-gray-400: #8b8b91;
-    --color-gray-500: #66666c;
+    --color-gray-500: #7d7d84;
     --color-gray-600: #2e2e33;
     --color-gray-700: #222226;
     --color-gray-800: #1a1a1d;
@@ -32,6 +32,13 @@ html.dark {
 html.dark body {
     background-color: #131315;
 }
+
+/* signals: gray-600 is a border colour in this dark palette, so text that asks for it reads
+   gray-500 instead. Unlayered, so it beats the dark:text-gray-600 utility. */
+html.dark .dark\:text-gray-600 {
+    color: var(--color-gray-500);
+}
+
 
 body {
     font-family: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
