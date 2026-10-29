@@ -274,7 +274,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <span className="ml-auto shrink-0 pt-0.5 text-[13px] text-gray-400 dark:text-gray-400">{task.id}</span>
         </div>
 
-        <h4 className={`font-semibold text-[15px] leading-snug line-clamp-2 ${
+        <h4 title={task.title} className={`font-semibold text-[15px] leading-snug line-clamp-4 ${
           isFromOtherBranch ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'
         }`}>
           {task.title}
