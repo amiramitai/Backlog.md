@@ -47,7 +47,7 @@ interface BoardProps {
 }
 
 const BOARD_FILTER_SELECT_CLASS =
-  'min-w-[140px] h-10 py-2 px-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-stone-500 dark:focus:ring-stone-400 transition-colors duration-200';
+  'min-w-[140px] h-10 py-2 px-3 text-sm border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-stone-500 dark:focus:ring-stone-400 transition-colors duration-200';
 
 const BOARD_FILTER_BUTTON_CLASS =
   'h-10 py-2 px-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg whitespace-nowrap transition-colors duration-200 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700';
@@ -664,9 +664,9 @@ const Board: React.FC<BoardProps> = ({
       )}
       <div className="mb-6 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors duration-200">Kanban Board</h2>
+          <h2 className="flex items-center gap-3 text-3xl font-medium tracking-tight text-gray-900 dark:text-gray-100 transition-colors duration-200"><span className="inline-block w-5 h-5 rounded-circle border-[3px] border-amber-400" aria-hidden="true" />Kanban Board</h2>
           <button
-            className="inline-flex items-center px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 dark:focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors duration-200"
+            className="inline-flex items-center px-5 py-2.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold rounded-xl hover:bg-gray-700 dark:hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400 dark:focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors duration-200"
             onClick={onNewTask}
           >
             + New Task
@@ -711,13 +711,13 @@ const Board: React.FC<BoardProps> = ({
           </div>
         )}
         <div className="flex flex-wrap items-center gap-3" role="toolbar" aria-label="Board view controls">
-            <div className="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 p-1 bg-gray-50 dark:bg-gray-800/50 transition-colors duration-200">
+            <div className="inline-flex rounded-2xl border border-gray-200 dark:border-gray-700 p-1.5 bg-gray-50 dark:bg-gray-800 transition-colors duration-200">
               <button
                 type="button"
                 onClick={() => onLaneChange('none')}
-                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                className={`px-5 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${
                   laneMode === 'none'
-                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
+                    ? 'bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 shadow-sm'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
               >
@@ -728,11 +728,11 @@ const Board: React.FC<BoardProps> = ({
                 onClick={() => onLaneChange('milestone')}
                 disabled={!hasTasksWithMilestones}
                 title={!hasTasksWithMilestones ? 'No tasks have milestones. Assign milestones to tasks first.' : 'Group tasks by milestone'}
-                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                className={`px-5 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${
                   !hasTasksWithMilestones
                     ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
                     : laneMode === 'milestone'
-                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
+                      ? 'bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 shadow-sm'
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
               >
@@ -915,7 +915,7 @@ const Board: React.FC<BoardProps> = ({
         <div className="overflow-x-auto pb-2">
           <div className="flex flex-row flex-nowrap gap-4 w-full">
             {visibleStatuses.map((status) => (
-              <div key={status} className="flex-1 min-w-[16rem]">
+              <div key={status} className="flex-1 min-w-[21rem] max-w-[26rem]">
                 <TaskColumn
                   title={status}
                   tasks={getTasksForLane(DEFAULT_LANE_KEY, status)}

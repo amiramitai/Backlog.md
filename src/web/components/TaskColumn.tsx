@@ -134,6 +134,16 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
     emitColumnReorder(sortByCreatedDate(tasks, direction).map(t => t.id));
   };
 
+  const getStatusRingClass = (status: string) => {
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes('done') || statusLower.includes('complete')) return 'border-emerald-400/80';
+    if (statusLower.includes('progress') || statusLower.includes('doing') || statusLower.includes('train')) return 'border-amber-400/80';
+    if (statusLower.includes('blocked') || statusLower.includes('hold') || statusLower.includes('stuck')) return 'border-red-400/80';
+    if (statusLower.includes('audit') || statusLower.includes('regist')) return 'border-sky-400/80';
+    if (statusLower.includes('ready')) return 'border-violet-400/80';
+    return 'border-gray-400 dark:border-gray-500';
+  };
+
   const getStatusBadgeClass = (status: string) => {
     const statusLower = status.toLowerCase();
     if (statusLower.includes('done') || statusLower.includes('complete')) {
@@ -236,24 +246,25 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
 
   return (
     <div
-      className={`rounded-lg p-4 transition-colors duration-200 h-full ${
+      className={`rounded-2xl p-3 transition-colors duration-200 h-full ${
         isEmpty ? 'min-h-24' : 'min-h-96'
       } ${
         isDragOver && (dragSourceStatus !== title || (dragSourceLane ?? null) !== (laneId ?? null))
           ? 'bg-green-50 dark:bg-green-900/20 border border-green-300 dark:border-green-600 border-dashed'
           : isEmpty
-            ? 'bg-gray-50/50 dark:bg-gray-800/30 border border-gray-200/50 dark:border-gray-700/50'
-            : 'bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700'
+            ? 'bg-gray-50/50 dark:bg-transparent border border-gray-200/50 dark:border-transparent'
+            : 'bg-white border border-gray-200 shadow-sm dark:bg-transparent dark:border-transparent dark:shadow-none'
       }`}
       onDrop={handleDrop}
       onDragOver={handleDragOverColumn}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-gray-900 dark:text-gray-100 transition-colors duration-200">{title}</h3>
-          <span className={`px-2 py-1 text-xs font-medium rounded-circle ${getStatusBadgeClass(title)}`}>
+      <div className="flex items-center justify-between mb-4 rounded-2xl px-4 py-2.5 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-2.5">
+          <span className={`inline-block w-3.5 h-3.5 rounded-circle border-2 ${getStatusRingClass(title)}`} aria-hidden="true" />
+          <h3 className="font-medium text-[15px] text-gray-900 dark:text-gray-100 transition-colors duration-200">{title}</h3>
+          <span className="text-[15px] text-gray-400 dark:text-gray-500">
             {tasks.length}
           </span>
         </div>

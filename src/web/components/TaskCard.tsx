@@ -6,6 +6,21 @@ import StoredDate from './StoredDate';
 import ProjectBadge from './ProjectBadge';
 import TaskTypeBadge from './TaskTypeBadge';
 
+
+// signals: stable tones for label pills and assignee avatars, picked by a hash of the text.
+const TONES = [
+  'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
+  'bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300',
+  'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-200',
+  'bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300',
+  'bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-300',
+  'bg-lime-100 text-lime-700 dark:bg-lime-500/15 dark:text-lime-200',
+];
+const AVATARS = ['bg-rose-500', 'bg-amber-500', 'bg-emerald-600', 'bg-sky-600', 'bg-violet-600', 'bg-fuchsia-600', 'bg-teal-600'];
+const hashOf = (text: string) => [...text].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+const labelTone = (label: string) => TONES[hashOf(label) % TONES.length];
+const avatarTone = (who: string) => AVATARS[hashOf(who) % AVATARS.length];
+
 interface TaskCardProps {
   task: Task;
   onUpdate: (taskId: string, updates: Partial<Task>) => void;
@@ -143,10 +158,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
   };
 
   const getPriorityBadge = (priority?: string) => {
-    switch (priority) {
-      case 'high': return { bg: 'bg-red-100 dark:bg-red-900/40', text: 'text-red-700 dark:text-red-300', label: 'High' };
-      case 'medium': return { bg: 'bg-yellow-100 dark:bg-yellow-900/40', text: 'text-yellow-700 dark:text-yellow-300', label: 'Med' };
-      case 'low': return { bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', label: 'Low' };
+    switch (priority?.toLowerCase()) {
+      case 'p0': return { bg: 'bg-red-100 dark:bg-red-500/15', text: 'text-red-700 dark:text-red-300', label: 'P0' };
+      case 'p1': return { bg: 'bg-orange-100 dark:bg-orange-500/15', text: 'text-orange-700 dark:text-orange-300', label: 'P1' };
+      case 'p2': return { bg: 'bg-amber-100 dark:bg-amber-500/15', text: 'text-amber-700 dark:text-amber-200', label: 'P2' };
+      case 'p3': return { bg: 'bg-emerald-100 dark:bg-emerald-500/15', text: 'text-emerald-700 dark:text-emerald-200', label: 'P3' };
+      case 'high': return { bg: 'bg-red-100 dark:bg-red-500/15', text: 'text-red-700 dark:text-red-300', label: 'High' };
+      case 'medium': return { bg: 'bg-amber-100 dark:bg-amber-500/15', text: 'text-amber-700 dark:text-amber-200', label: 'Medium' };
+      case 'low': return { bg: 'bg-emerald-100 dark:bg-emerald-500/15', text: 'text-emerald-700 dark:text-emerald-200', label: 'Low' };
       default:
         return priority
           ? {
@@ -159,6 +178,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
   };
 
   const priorityBadge = getPriorityBadge(task.priority);
+  const excerpt = (task.description ?? '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/[#*`>_\[\]]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 180);
 
   return (
     <div className="relative">
@@ -176,11 +201,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
       )}
 
       <div
-        className={`bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md p-3 mb-2 transition-all duration-200 ${
+        className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl p-4 mb-3 transition-all duration-200 ${
           isFromOtherBranch 
             ? 'opacity-75 cursor-not-allowed border-dashed' 
-            : 'cursor-pointer hover:shadow-md dark:hover:shadow-lg hover:border-stone-500 dark:hover:border-stone-400'
-        } ${getPriorityClass(task.priority)} ${
+            : 'cursor-pointer hover:shadow-md dark:hover:shadow-none hover:border-gray-300 dark:hover:border-gray-500'
+        } ${
           isDragging || (isSelected && isSelectionDragging) ? 'opacity-50 transform rotate-2 scale-105' : ''
         } ${
           isSelected
@@ -227,70 +252,82 @@ const TaskCard: React.FC<TaskCardProps> = ({
           </div>
         )}
 
-        {/* Header row with task metadata. It wraps like the footer: when the id, the badges and the
-            ring and priority group do not fit on one line, the group moves to a second line, still
-            flush right, so the badges are not squeezed to make room for it. */}
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1.5">
-          <div className="flex min-w-0 items-center gap-2">
-            <span className="shrink-0 text-xs text-gray-400 dark:text-gray-500 font-mono transition-colors duration-200">{task.id}</span>
+        {/* signals: pills row (priority, type, labels) with the id on the right. */}
+        <div className="flex items-start gap-2 mb-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+            {priorityBadge && (
+              <span className={`px-2.5 py-1 text-[11px] font-medium rounded-lg ${priorityBadge.bg} ${priorityBadge.text}`}>
+                {priorityBadge.label}
+              </span>
+            )}
             <TaskTypeBadge type={task.type} availableTypes={availableTypes} className="min-w-0" />
             <ProjectBadge project={task.project} availableProjects={availableProjects} className="min-w-0" />
-          </div>
-          {(acceptanceCriteriaProgress || priorityBadge) && (
-            <div className="ml-auto flex shrink-0 items-center gap-2">
-              <AcceptanceCriteriaProgress task={task} density="card" />
-              {priorityBadge && (
-                <span className={`px-1.5 py-0.5 text-[10px] font-semibold rounded ${priorityBadge.bg} ${priorityBadge.text} transition-colors duration-200`}>
-                  {priorityBadge.label}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Title */}
-        <h4 className={`font-semibold text-sm line-clamp-2 transition-colors duration-200 ${
-          isFromOtherBranch
-            ? 'text-gray-600 dark:text-gray-400'
-            : 'text-gray-900 dark:text-gray-100'
-        }`}>
-          {task.title}
-        </h4>
-
-        {/* Labels - limit to 3 */}
-        {task.labels.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
-            {task.labels.slice(0, 3).map(label => (
-              <span
-                key={label}
-                className="inline-block px-1.5 py-0.5 text-[10px] bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded transition-colors duration-200"
-              >
+            {task.labels.slice(0, 2).map(label => (
+              <span key={label} className={`px-2.5 py-1 text-[11px] font-medium rounded-lg ${labelTone(label)}`}>
                 {label}
               </span>
             ))}
-            {task.labels.length > 3 && (
-              <span className="inline-block px-1.5 py-0.5 text-[10px] text-gray-400 dark:text-gray-500">
-                +{task.labels.length - 3}
+            {task.labels.length > 2 && (
+              <span className="px-1 py-1 text-[11px] text-gray-400 dark:text-gray-500">+{task.labels.length - 2}</span>
+            )}
+          </div>
+          <span className="ml-auto shrink-0 pt-0.5 text-[13px] text-gray-400 dark:text-gray-400">{task.id}</span>
+        </div>
+
+        <h4 className={`font-semibold text-[15px] leading-snug line-clamp-2 ${
+          isFromOtherBranch ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'
+        }`}>
+          {task.title}
+        </h4>
+        {excerpt && (
+          <p className="mt-1 text-[13px] leading-snug text-gray-500 dark:text-gray-400 line-clamp-2">{excerpt}</p>
+        )}
+
+        {acceptanceCriteriaProgress && acceptanceCriteriaProgress.total > 0 && (() => {
+          const pct = Math.round((acceptanceCriteriaProgress.checked / acceptanceCriteriaProgress.total) * 100);
+          return (
+            <div className="mt-4">
+              <div className="flex items-center justify-between text-[12px] text-gray-500 dark:text-gray-300 mb-1.5">
+                <span>Progress</span>
+                <span className="text-gray-400 dark:text-gray-400">{pct}%</span>
+              </div>
+              <div className="h-1.5 rounded-circle bg-gray-200 dark:bg-gray-700">
+                <div
+                  className={`h-1.5 rounded-circle ${pct >= 100 ? 'bg-emerald-300' : 'bg-amber-300'}`}
+                  style={{ width: `${Math.max(pct, 2)}%` }}
+                />
+              </div>
+            </div>
+          );
+        })()}
+
+        <div className="flex items-center justify-between gap-2 mt-4">
+          <div className="flex -space-x-2">
+            {task.assignee.slice(0, 4).map(who => (
+              <span
+                key={who}
+                title={who}
+                className={`inline-flex items-center justify-center w-7 h-7 rounded-circle ring-2 ring-white dark:ring-gray-800 text-[11px] font-semibold text-white ${avatarTone(who)}`}
+              >
+                {who.replace(/^@/, '').slice(0, 2).toUpperCase()}
+              </span>
+            ))}
+          </div>
+          <div className="flex items-center gap-3 text-[12px] text-gray-400 dark:text-gray-400">
+            {task.dueDate && <span>Due <StoredDate value={task.dueDate} dateFormat={dateFormat} /></span>}
+            {task.dependencies.length > 0 && (
+              <span className="inline-flex items-center gap-1" title={`Depends on ${task.dependencies.join(', ')}`}>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                {task.dependencies.length}
+              </span>
+            )}
+            {acceptanceCriteriaProgress && acceptanceCriteriaProgress.total > 0 && (
+              <span className="inline-flex items-center gap-1" title="Acceptance criteria">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {acceptanceCriteriaProgress.checked}/{acceptanceCriteriaProgress.total}
               </span>
             )}
           </div>
-        )}
-
-        {/* Footer with dates and assignee */}
-        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[10px] text-gray-400 dark:text-gray-500 mt-2 pt-1.5 border-t border-gray-100 dark:border-gray-600/50 transition-colors duration-200">
-          {/* Grouped so the updated date sits beside the created date on every card, whatever else the footer shows.
-              The group uses the same gaps as the footer row (gap-x-2 gap-y-1), so change the two together.
-              A new labelled date in the compact style belongs inside this group. */}
-          <span className="flex flex-wrap gap-x-2 gap-y-1">
-            <StoredDate value={task.createdDate} dateFormat={dateFormat} compact />
-            {task.updatedDate && <span>Updated: <StoredDate value={task.updatedDate} dateFormat={dateFormat} compact /></span>}
-          </span>
-          {task.dueDate && <span>Due: <StoredDate value={task.dueDate} dateFormat={dateFormat} /></span>}
-          {task.assignee.length > 0 && (
-            <span className="truncate max-w-[80px]" title={task.assignee.join(', ')}>
-              {task.assignee[0]}
-            </span>
-          )}
         </div>
       </div>
     </div>

@@ -10,6 +10,35 @@
     --radius-circle: 9999px;
 }
 
+/* signals: the dark theme as near-black neutrals (reference: a soft dark project board).
+   Every dark:gray-* utility reads these, so the whole dark UI follows. */
+html.dark {
+    --color-gray-50: #f4f4f5;
+    --color-gray-100: #ededef;
+    --color-gray-200: #d6d6da;
+    --color-gray-300: #b3b3b8;
+    --color-gray-400: #8b8b91;
+    --color-gray-500: #66666c;
+    --color-gray-600: #2e2e33;
+    --color-gray-700: #222226;
+    --color-gray-800: #1a1a1d;
+    --color-gray-900: #131315;
+    --color-gray-950: #0e0e10;
+    --color-slate-700: #222226;
+    --color-stone-900: #1a1a1d;
+    background-color: #131315;
+}
+
+html.dark body {
+    background-color: #131315;
+}
+
+body {
+    font-family: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    letter-spacing: -0.005em;
+}
+
+
 @layer base {
     button {
         cursor: pointer;
