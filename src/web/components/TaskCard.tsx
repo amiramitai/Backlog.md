@@ -302,16 +302,18 @@ const TaskCard: React.FC<TaskCardProps> = ({
         })()}
 
         <div className="flex items-center justify-between gap-2 mt-4">
-          <div className="flex -space-x-2">
-            {task.assignee.slice(0, 4).map(who => (
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+            {task.assignee.slice(0, 3).map(who => (
               <span
                 key={who}
-                title={who}
-                className={`inline-flex items-center justify-center w-7 h-7 rounded-circle ring-2 ring-white dark:ring-gray-800 text-[11px] font-semibold text-white ${avatarTone(who)}`}
+                title={`Assigned to ${who}`}
+                className="inline-flex items-center gap-1.5 max-w-[11rem] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-700 text-[12px] font-medium text-gray-700 dark:text-gray-200"
               >
-                {who.replace(/^@/, '').slice(0, 2).toUpperCase()}
+                <span className={`inline-block w-2 h-2 shrink-0 rounded-full ${avatarTone(who)}`} aria-hidden="true" />
+                <span className="truncate">{who}</span>
               </span>
             ))}
+            {task.assignee.length > 3 && <span className="text-[12px] text-gray-400">+{task.assignee.length - 3}</span>}
           </div>
           <div className="flex items-center gap-3 text-[12px] text-gray-400 dark:text-gray-400">
             {task.reporter && (
