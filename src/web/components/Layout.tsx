@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import SideNavigation from './SideNavigation';
+import { pendingQuestions } from '../lib/ownerInbox';
 import Navigation from './Navigation';
 import { HealthIndicator, HealthSuccessToast } from './HealthIndicator';
 import { DuplicateIdWarning } from './DuplicateIdWarning';
@@ -38,6 +39,7 @@ export default function Layout({
 			<HealthIndicator />
 			<SideNavigation 
 				taskCount={tasks.length}
+				inboxCount={pendingQuestions(tasks).length}
 				docs={docs}
 				decisions={decisions}
 				isLoading={isLoading}

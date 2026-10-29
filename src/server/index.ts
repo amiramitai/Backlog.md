@@ -413,6 +413,7 @@ export class BacklogServer {
 					"/board/*": spaIndexHtml,
 					"/milestones": spaIndexHtml,
 					"/drafts": spaIndexHtml,
+					"/inbox": spaIndexHtml, // signals: the owner's inbox
 					"/documentation": spaIndexHtml,
 					"/documentation/*": spaIndexHtml,
 					"/decisions": spaIndexHtml,
@@ -1170,7 +1171,7 @@ export class BacklogServer {
 			const author =
 				typeof updates.commentAuthor === "string" && updates.commentAuthor.trim().length > 0
 					? updates.commentAuthor.trim()
-					: undefined;
+					: process.env.BACKLOG_REPORTER || undefined; // signals: the board's user signs their comments (the owner's board: @owner)
 			updateInput.appendComments = updates.commentsAppend
 				.map((body: unknown) => ({
 					body: String(body ?? "").trim(),
