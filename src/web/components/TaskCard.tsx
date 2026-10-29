@@ -201,7 +201,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       )}
 
       <div
-        className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl p-4 mb-3 transition-all duration-200 ${
+        className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-4 mb-2 transition-all duration-200 ${
           isFromOtherBranch 
             ? 'opacity-75 cursor-not-allowed border-dashed' 
             : 'cursor-pointer hover:shadow-md dark:hover:shadow-none hover:border-gray-300 dark:hover:border-gray-500'
@@ -256,14 +256,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
         <div className="flex items-start gap-2 mb-3">
           <div className="flex min-w-0 flex-wrap items-center gap-1.5">
             {priorityBadge && (
-              <span className={`px-2.5 py-1 text-[11px] font-medium rounded-lg ${priorityBadge.bg} ${priorityBadge.text}`}>
+              <span className={`px-2.5 py-1 text-[11px] font-medium rounded-md ${priorityBadge.bg} ${priorityBadge.text}`}>
                 {priorityBadge.label}
               </span>
             )}
             <TaskTypeBadge type={task.type} availableTypes={availableTypes} className="min-w-0" />
             <ProjectBadge project={task.project} availableProjects={availableProjects} className="min-w-0" />
             {task.labels.slice(0, 2).map(label => (
-              <span key={label} className={`px-2.5 py-1 text-[11px] font-medium rounded-lg ${labelTone(label)}`}>
+              <span key={label} className={`px-2.5 py-1 text-[11px] font-medium rounded-md ${labelTone(label)}`}>
                 {label}
               </span>
             ))}

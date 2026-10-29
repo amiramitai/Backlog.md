@@ -246,7 +246,7 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
 
   return (
     <div
-      className={`rounded-2xl p-3 transition-colors duration-200 h-full ${
+      className={`rounded-lg px-0.5 py-1 transition-colors duration-200 h-full ${
         isEmpty ? 'min-h-24' : 'min-h-96'
       } ${
         isDragOver && (dragSourceStatus !== title || (dragSourceLane ?? null) !== (laneId ?? null))
@@ -260,7 +260,7 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
     >
-      <div className="flex items-center justify-between mb-4 rounded-2xl px-4 py-2.5 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between mb-3 rounded-lg px-4 py-2.5 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2.5">
           <span className={`inline-block w-3.5 h-3.5 rounded-circle border-2 ${getStatusRingClass(title)}`} aria-hidden="true" />
           <h3 className="font-medium text-[15px] text-gray-900 dark:text-gray-100 transition-colors duration-200">{title}</h3>
