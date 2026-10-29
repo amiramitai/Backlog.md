@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import SideNavigation from './SideNavigation';
 import { pendingQuestions } from '../lib/ownerInbox';
-import Navigation from './Navigation';
+import { BranchIndexingIndicator } from './BranchIndexingIndicator';
 import { HealthIndicator, HealthSuccessToast } from './HealthIndicator';
 import { DuplicateIdWarning } from './DuplicateIdWarning';
 import type { DuplicateRepairPlan } from '../../core/duplicate-task-repair';
@@ -48,11 +48,15 @@ export default function Layout({
 				onRefreshData={onRefreshData}
 			/>
 			<div className="flex-1 flex flex-col min-h-0 min-w-0">
-				<Navigation projectName={projectName} loadingMessage={loadingMessage} />
 				<DuplicateIdWarning plan={duplicateRepairPlan} onRepaired={onRefreshData} />
 				<main className="flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden">
 					<Outlet context={{ tasks, docs, decisions, isLoading, onRefreshData }} />
 				</main>
+			</div>
+			{/* signals: no top bar (owner 2026-10-29: redundant). Indexing shows as a small floating chip; the theme toggle
+			    is in the sidebar's footer, and the project name is the browser tab's title. */}
+			<div className="fixed bottom-4 right-4 z-50 pointer-events-none">
+				<BranchIndexingIndicator message={loadingMessage} />
 			</div>
 			{showSuccessToast && (
 				<HealthSuccessToast onDismiss={onDismissToast} />
