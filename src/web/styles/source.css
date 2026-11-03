@@ -109,23 +109,17 @@ body {
     [data-color-mode*="dark"] .wmde-markdown-var,
     div[data-color-mode*="dark"] .wmde-markdown-var,
     div[data-color-mode*="dark"] .wmde-markdown {
-        /* Base canvas and text colors */
-        --color-canvas-default: #1e293b !important;
-        /* slate-800 - main background */
-        --color-canvas-subtle: #334155 !important;
-        /* slate-700 - subtle background */
-        --color-fg-default: #f1f5f9 !important;
-        /* slate-100 - primary text */
-        --color-fg-muted: #94a3b8 !important;
-        /* slate-400 - muted text */
-        --color-fg-subtle: #64748b !important;
-        /* slate-500 - subtle text */
+        /* signals: the markdown sits on its panel in the board's near-black neutrals (html.dark above), not on a
+           slate-800 canvas of its own: a description read as a bright box inside the task view. */
+        --color-canvas-default: transparent !important;
+        --color-canvas-subtle: #222226 !important;
+        --color-fg-default: #ededef !important;
+        --color-fg-muted: #8b8b91 !important;
+        --color-fg-subtle: #7d7d84 !important;
 
         /* Borders */
-        --color-border-default: #475569 !important;
-        /* slate-600 - borders */
-        --color-border-muted: #334155 !important;
-        /* slate-700 - muted borders */
+        --color-border-default: #2e2e33 !important;
+        --color-border-muted: #222226 !important;
 
         /* Syntax highlighting with blue theme */
         --color-prettylights-syntax-comment: #94a3b8 !important;
