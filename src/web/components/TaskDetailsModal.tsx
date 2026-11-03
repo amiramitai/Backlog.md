@@ -142,7 +142,7 @@ const buildTaskDetailsFormState = ({
 
 const SectionHeader: React.FC<{ title: string; right?: React.ReactNode }> = ({ title, right }) => (
   <div className="flex items-center justify-between mb-3">
-    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 tracking-tight transition-colors duration-200">
+    <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 transition-colors duration-200">
       {title}
     </h3>
     {right ? <div className="ml-2 text-xs text-gray-500 dark:text-gray-400">{right}</div> : null}
@@ -1116,7 +1116,13 @@ export const TaskDetailsModal: React.FC<Props> = ({
         refreshAfterCommentChange();
         onClose();
       }}
-      title={isCreateMode ? (isDraftMode ? "Create New Draft" : "Create New Task") : `${displayId} — ${task.title}`}
+      title={isCreateMode ? (isDraftMode ? "Create New Draft" : "Create New Task") : (
+        <>
+          {/* signals: the id as a quiet tag, the title as the heading (the reference's project header) */}
+          <span className="mr-2 align-middle font-mono text-xs font-medium text-gray-500 dark:text-gray-400">{displayId}</span>
+          <span className="align-middle text-lg font-semibold">{task.title}</span>
+        </>
+      )}
       maxWidthClass="max-w-5xl"
       disableEscapeClose={mode === "edit" || mode === "create" || demoting}
       actions={
